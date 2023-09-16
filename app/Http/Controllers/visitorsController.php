@@ -136,8 +136,9 @@ class visitorsController extends AppBaseController
 
     public function sum()
     {
-        $counts = Visitors::select('booth_number')->selectRaw('count(id) as count_booth_number')->groupBy('booth_number')->get();
+        // 通過人数をカウントする
+        $counts = Visitors::select('booth_number')->selectRaw('count(id) as count_booth_number')->groupBy('booth_number')->orderBy('booth_number', 'asc')->get();
 
-        return view('visitors.sum')->with($counts);
+        return view('visitors.sum')->with('counts', $counts);
     }
 }
