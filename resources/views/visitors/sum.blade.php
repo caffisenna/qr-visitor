@@ -7,7 +7,7 @@
             <table class="table" id="visitors-table">
                 <thead>
                     <tr>
-                        <th>ブース123</th>
+                        <th>ブース</th>
                         <th>通過人数</th>
                     </tr>
                 </thead>
