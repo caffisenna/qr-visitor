@@ -95,7 +95,7 @@
     </div>
 
     <!-- Main Footer -->
-    <footer class="main-footer">
+    <footer class="main-footer">1
     </footer>
 </div>
 
