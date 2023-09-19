@@ -24,6 +24,13 @@ class CreatevisitorsRequest extends FormRequest
      */
     public function rules()
     {
+        $rules = visitors::$rules;
+        $input = $this->all();
+        $input['booth_number'] = str_replace('booth', '', $input['booth_number']);
+        $this->replace($input);
+
+
+
         return visitors::$rules;
     }
 }
