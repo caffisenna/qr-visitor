@@ -55,9 +55,10 @@ class visitorsController extends AppBaseController
 
         $visitors = $this->visitorsRepository->create($input);
 
-        Flash::success('Visitors saved successfully.');
+        Flash::success('通過処理が完了しました');
 
-        return redirect(route('visitors.index'));
+        // return redirect(route('visitors.index'));
+        return redirect('home');
     }
 
     /**
