@@ -2,25 +2,191 @@
 @extends('layouts.app')
 
 @section('content')
+    <h2>入場集計</h2>
     <div class="card-body p-0">
-        <div class="table-responsive">
-            <table class="table" id="visitors-table">
+        @php
+            // 結果セットを日付ごとにグループ化
+            $groupedResults = $counts->groupBy('date');
+        @endphp
+
+        @foreach ($groupedResults as $date => $dateResults)
+            <h2>{{ $date }}</h2> <!-- 日付を表示 -->
+
+            <table class="uk-table uk-table-striped uk-table-small">
                 <thead>
                     <tr>
-                        <th>ブース</th>
-                        <th>通過人数</th>
+                        <th>ブース名</th>
+                        <th>〜10時</th>
+                        <th>〜11時</th>
+                        <th>〜12時</th>
+                        <th>〜13時</th>
+                        <th>〜14時</th>
+                        <th>〜15時</th>
+                        <th>〜16時</th>
+                        <th>16時〜</th>
+                        <th>合計</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($counts as $count)
+                    @php
+                        $boothTotals = [
+                            'H' => [
+                                '09:00' => 0,
+                                '10:00' => 0,
+                                '11:00' => 0,
+                                '12:00' => 0,
+                                '13:00' => 0,
+                                '14:00' => 0,
+                                '15:00' => 0,
+                                '16:00' => 0,
+                                'total' => 0,
+                            ],
+                            'K' => [
+                                '09:00' => 0,
+                                '10:00' => 0,
+                                '11:00' => 0,
+                                '12:00' => 0,
+                                '13:00' => 0,
+                                '14:00' => 0,
+                                '15:00' => 0,
+                                '16:00' => 0,
+                                'total' => 0,
+                            ],
+                            'S' => [
+                                '09:00' => 0,
+                                '10:00' => 0,
+                                '11:00' => 0,
+                                '12:00' => 0,
+                                '13:00' => 0,
+                                '14:00' => 0,
+                                '15:00' => 0,
+                                '16:00' => 0,
+                                'total' => 0,
+                            ],
+                            'E' => [
+                                '09:00' => 0,
+                                '10:00' => 0,
+                                '11:00' => 0,
+                                '12:00' => 0,
+                                '13:00' => 0,
+                                '14:00' => 0,
+                                '15:00' => 0,
+                                '16:00' => 0,
+                                'total' => 0,
+                            ],
+                            'F' => [
+                                '09:00' => 0,
+                                '10:00' => 0,
+                                '11:00' => 0,
+                                '12:00' => 0,
+                                '13:00' => 0,
+                                '14:00' => 0,
+                                '15:00' => 0,
+                                '16:00' => 0,
+                                'total' => 0,
+                            ],
+                            'hourTotals' => [
+                                '09:00' => 0,
+                                '10:00' => 0,
+                                '11:00' => 0,
+                                '12:00' => 0,
+                                '13:00' => 0,
+                                '14:00' => 0,
+                                '15:00' => 0,
+                                '16:00' => 0,
+                                'total' => 0,
+                            ],
+                        ];
+                    @endphp
+
+                    @foreach ($dateResults as $row)
+                        @php
+                            $booth = $row->booth_number;
+                            $hour = $row->time_interval;
+                            $count = $row->count;
+
+                            if (!isset($boothTotals[$booth])) {
+                                $boothTotals[$booth] = [
+                                    '09:00' => 0,
+                                    '10:00' => 0,
+                                    '11:00' => 0,
+                                    '12:00' => 0,
+                                    '13:00' => 0,
+                                    '14:00' => 0,
+                                    '15:00' => 0,
+                                    '16:00' => 0,
+                                    'total' => 0,
+                                ];
+                            }
+
+                            // 16:00以降の合計を計算
+                            $boothTotals['hourTotals']['16:00'] = 0;
+
+                            $boothTotals[$booth][$hour] += $count;
+                            $boothTotals[$booth]['total'] += $count;
+                            $boothTotals['hourTotals'][$hour] += $count;
+                            $boothTotals['hourTotals']['total'] += $count;
+
+                            // 16:00以降のカウンタも更新
+                            if ($hour >= '16:00') {
+                                $boothTotals['hourTotals']['16:00'] += $count;
+                            }
+                        @endphp
+                    @endforeach
+
+                    @foreach (['H', 'K', 'S', 'E', 'F', 'hourTotals'] as $booth)
                         <tr>
-                            <td>{{ $count->booth_number }}</td>
-                            <td>{{ $count->count_booth_number }}人</td>
+                            <td>
+                                @switch($booth)
+                                    @case('H')
+                                        販売店
+                                    @break
+
+                                    @case('K')
+                                        工事店
+                                    @break
+
+                                    @case('S')
+                                        メーカー
+                                    @break
+
+                                    @case('E')
+                                        金融・管理・一般・EU
+                                    @break
+
+                                    @case('F')
+                                        ファシリティーズ
+                                    @break
+
+                                    @default
+                                    時間帯合計
+                                @endswitch
+                            </td>
+                            <td>{{ $boothTotals[$booth]['09:00'] }}</td>
+                            <td>{{ $boothTotals[$booth]['10:00'] }}</td>
+                            <td>{{ $boothTotals[$booth]['11:00'] }}</td>
+                            <td>{{ $boothTotals[$booth]['12:00'] }}</td>
+                            <td>{{ $boothTotals[$booth]['13:00'] }}</td>
+                            <td>{{ $boothTotals[$booth]['14:00'] }}</td>
+                            <td>{{ $boothTotals[$booth]['15:00'] }}</td>
+                            <td>{{ $boothTotals[$booth]['16:00'] }}</td>
+                            <td>{{ $boothTotals[$booth]['total'] }}</td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
-        </div>
+        @endforeach
+
+
+
+
+
+
+
+
+
+
+
 
         <div class="card-footer clearfix">
             <div class="float-right">
