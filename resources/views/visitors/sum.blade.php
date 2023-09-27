@@ -39,6 +39,7 @@
                                 '14:00' => 0,
                                 '15:00' => 0,
                                 '16:00' => 0,
+                                '16:00up' => 0, // 16時以降の合計
                                 'total' => 0,
                             ],
                             'K' => [
@@ -50,41 +51,11 @@
                                 '14:00' => 0,
                                 '15:00' => 0,
                                 '16:00' => 0,
+                                '16:00up' => 0, // 16時以降の合計
                                 'total' => 0,
                             ],
-                            'S' => [
-                                '09:00' => 0,
-                                '10:00' => 0,
-                                '11:00' => 0,
-                                '12:00' => 0,
-                                '13:00' => 0,
-                                '14:00' => 0,
-                                '15:00' => 0,
-                                '16:00' => 0,
-                                'total' => 0,
-                            ],
-                            'E' => [
-                                '09:00' => 0,
-                                '10:00' => 0,
-                                '11:00' => 0,
-                                '12:00' => 0,
-                                '13:00' => 0,
-                                '14:00' => 0,
-                                '15:00' => 0,
-                                '16:00' => 0,
-                                'total' => 0,
-                            ],
-                            'F' => [
-                                '09:00' => 0,
-                                '10:00' => 0,
-                                '11:00' => 0,
-                                '12:00' => 0,
-                                '13:00' => 0,
-                                '14:00' => 0,
-                                '15:00' => 0,
-                                '16:00' => 0,
-                                'total' => 0,
-                            ],
+                            // 他のブースに関する設定を追加
+                            // ...
                             'hourTotals' => [
                                 '09:00' => 0,
                                 '10:00' => 0,
@@ -94,6 +65,7 @@
                                 '14:00' => 0,
                                 '15:00' => 0,
                                 '16:00' => 0,
+                                '16:00up' => 0, // 16時以降の合計
                                 'total' => 0,
                             ],
                         ];
@@ -115,26 +87,26 @@
                                     '14:00' => 0,
                                     '15:00' => 0,
                                     '16:00' => 0,
+                                    '16:00up' => 0, // 16時以降の合計
                                     'total' => 0,
                                 ];
                             }
 
-                            // 16:00以降の合計を計算
-                            $boothTotals['hourTotals']['16:00'] = 0;
-
                             $boothTotals[$booth][$hour] += $count;
                             $boothTotals[$booth]['total'] += $count;
-                            $boothTotals['hourTotals'][$hour] += $count;
-                            $boothTotals['hourTotals']['total'] += $count;
 
                             // 16:00以降のカウンタも更新
                             if ($hour >= '16:00') {
-                                $boothTotals['hourTotals']['16:00'] += $count;
+                                $boothTotals[$booth]['16:00up'] += $count;
                             }
+
+                            $boothTotals['hourTotals'][$hour] += $count;
+                            $boothTotals['hourTotals']['total'] += $count;
                         @endphp
                     @endforeach
 
-                    @foreach (['H', 'K', 'S', 'E', 'F', 'hourTotals'] as $booth)
+                    {{-- 各ブースごとの16:00以降のカウント --}}
+                    @foreach (['H', 'K', 'S', 'E', 'F'] as $booth)
                         <tr>
                             <td>
                                 @switch($booth)
@@ -159,7 +131,7 @@
                                     @break
 
                                     @default
-                                    時間帯合計
+                                        時間帯合計
                                 @endswitch
                             </td>
                             <td>{{ $boothTotals[$booth]['09:00'] }}</td>
@@ -169,24 +141,27 @@
                             <td>{{ $boothTotals[$booth]['13:00'] }}</td>
                             <td>{{ $boothTotals[$booth]['14:00'] }}</td>
                             <td>{{ $boothTotals[$booth]['15:00'] }}</td>
-                            <td>{{ $boothTotals[$booth]['16:00'] }}</td>
+                            <td>{{ $boothTotals[$booth]['16:00up'] }}</td>
                             <td>{{ $boothTotals[$booth]['total'] }}</td>
                         </tr>
                     @endforeach
+
+                    {{-- 時間帯合計の行 --}}
+                    <tr>
+                        <td>時間帯合計</td>
+                        <td>{{ $boothTotals['hourTotals']['09:00'] }}</td>
+                        <td>{{ $boothTotals['hourTotals']['10:00'] }}</td>
+                        <td>{{ $boothTotals['hourTotals']['11:00'] }}</td>
+                        <td>{{ $boothTotals['hourTotals']['12:00'] }}</td>
+                        <td>{{ $boothTotals['hourTotals']['13:00'] }}</td>
+                        <td>{{ $boothTotals['hourTotals']['14:00'] }}</td>
+                        <td>{{ $boothTotals['hourTotals']['15:00'] }}</td>
+                        <td>{{ $boothTotals['hourTotals']['16:00'] }}</td>
+                        <td>{{ $boothTotals['hourTotals']['total'] }}</td>
+                    </tr>
                 </tbody>
             </table>
         @endforeach
-
-
-
-
-
-
-
-
-
-
-
 
         <div class="card-footer clearfix">
             <div class="float-right">

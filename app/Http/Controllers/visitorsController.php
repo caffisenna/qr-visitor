@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Flash;
 use App\Models\visitors;
 use Illuminate\Support\Facades\DB;
+use App\Exports\ExcelExport; // excel export用
+use Maatwebsite\Excel\Facades\Excel; // excel export用
 
 class visitorsController extends AppBaseController
 {
@@ -138,35 +140,14 @@ class visitorsController extends AppBaseController
 
     public function sum()
     {
-        // 通過人数をカウントする
-        // $counts = Visitors::select('booth_number')->selectRaw('count(id) as count_booth_number')->groupBy('booth_number')->orderBy('booth_number', 'asc')->get();
-        // $startDate = '2023-09-19'; // 開始日
-        // $endDate = '2023-09-20';   // 終了日
-
-        // $counts = DB::table('visitors')
-        // ->select(
-        //     'booth_number',
-        //     DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') AS date"),
-        //     DB::raw('SUM(CASE WHEN TIME(created_at) BETWEEN "09:00:00" AND "09:59:59" THEN 1 ELSE 0 END) AS count_9'),
-        //     DB::raw('SUM(CASE WHEN TIME(created_at) BETWEEN "10:00:00" AND "10:59:59" THEN 1 ELSE 0 END) AS count_10'),
-        //     DB::raw('SUM(CASE WHEN TIME(created_at) BETWEEN "11:00:00" AND "11:59:59" THEN 1 ELSE 0 END) AS count_11'),
-        //     DB::raw('SUM(CASE WHEN TIME(created_at) BETWEEN "12:00:00" AND "12:59:59" THEN 1 ELSE 0 END) AS count_12'),
-        //     DB::raw('SUM(CASE WHEN TIME(created_at) BETWEEN "13:00:00" AND "13:59:59" THEN 1 ELSE 0 END) AS count_13'),
-        //     DB::raw('SUM(CASE WHEN TIME(created_at) BETWEEN "14:00:00" AND "14:59:59" THEN 1 ELSE 0 END) AS count_14'),
-        //     DB::raw('SUM(CASE WHEN TIME(created_at) BETWEEN "15:00:00" AND "15:59:59" THEN 1 ELSE 0 END) AS count_15'),
-        //     DB::raw('SUM(CASE WHEN TIME(created_at) >= "16:00:00" THEN 1 ELSE 0 END) AS count_16_and_after')
-        // )
-        // ->whereBetween('created_at', [$startDate.' 00:00:00', $endDate.' 23:59:59'])
-        // ->groupBy('booth_number', 'date')
-        // ->get();
         $startDate = '2023-09-19'; // 開始日
         $endDate = '2023-09-20';   // 終了日
 
         $counts = DB::table('visitors')
-        ->select(
-            'booth_number',
-            DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') AS date"),
-            DB::raw("CASE
+            ->select(
+                'booth_number',
+                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') AS date"),
+                DB::raw("CASE
                 WHEN TIME(created_at) BETWEEN '09:00:00' AND '09:59:59' THEN '09:00'
                 WHEN TIME(created_at) BETWEEN '10:00:00' AND '10:59:59' THEN '10:00'
                 WHEN TIME(created_at) BETWEEN '11:00:00' AND '11:59:59' THEN '11:00'
@@ -175,16 +156,52 @@ class visitorsController extends AppBaseController
                 WHEN TIME(created_at) BETWEEN '14:00:00' AND '14:59:59' THEN '14:00'
                 WHEN TIME(created_at) BETWEEN '15:00:00' AND '15:59:59' THEN '15:00'
                 ELSE '16:00' END AS time_interval"),
-            DB::raw('SUM(1) AS count')
-        )
-        ->whereBetween('created_at', [$startDate.' 00:00:00', $endDate.' 23:59:59'])
-        ->groupBy('booth_number', 'date', 'time_interval') // 'date'も含める
-        ->orderBy('booth_number')
-        ->orderBy('time_interval')
-        ->get();
+                DB::raw('SUM(1) AS count')
+            )
+            ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->groupBy('booth_number', 'date', 'time_interval') // 'date'も含める
+            ->orderBy('booth_number')
+            ->orderBy('time_interval')
+            ->get();
 
         // dd($counts);
 
         return view('visitors.sum')->with('counts', $counts);
+    }
+
+    public function export_to_excel()
+    {
+        $filename = 'export.xlsx';
+
+        $startDate = '2023-09-19'; // 開始日
+        $endDate = '2023-09-20';   // 終了日
+
+        $counts = DB::table('visitors')
+            ->select(
+                'booth_number',
+                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') AS date"),
+                DB::raw("CASE
+                WHEN TIME(created_at) BETWEEN '09:00:00' AND '09:59:59' THEN '09:00'
+                WHEN TIME(created_at) BETWEEN '10:00:00' AND '10:59:59' THEN '10:00'
+                WHEN TIME(created_at) BETWEEN '11:00:00' AND '11:59:59' THEN '11:00'
+                WHEN TIME(created_at) BETWEEN '12:00:00' AND '12:59:59' THEN '12:00'
+                WHEN TIME(created_at) BETWEEN '13:00:00' AND '13:59:59' THEN '13:00'
+                WHEN TIME(created_at) BETWEEN '14:00:00' AND '14:59:59' THEN '14:00'
+                WHEN TIME(created_at) BETWEEN '15:00:00' AND '15:59:59' THEN '15:00'
+                ELSE '16:00' END AS time_interval"),
+                DB::raw('SUM(1) AS count')
+            )
+            ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            ->groupBy('booth_number', 'date', 'time_interval') // 'date'も含める
+            ->orderBy('booth_number')
+            ->orderBy('time_interval')
+            ->get();
+
+        //エクセルの見出しを以下で設定
+        $headings = [
+        ];
+
+        //以下で先ほど作成したExcelExportにデータを渡す。
+        return Excel::download(new ExcelExport($counts, $headings), $filename);
     }
 }
