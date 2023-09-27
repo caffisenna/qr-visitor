@@ -23,3 +23,4 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::resource('visitors', App\Http\Controllers\visitorsController::class);
 Route::get('/visitors_sum/', [App\Http\Controllers\visitorsController::class, 'sum'])->name('sum');
+Route::get('/export', [App\Http\Controllers\visitorsController::class, 'export_to_excel'])->name('export_to_excel');
