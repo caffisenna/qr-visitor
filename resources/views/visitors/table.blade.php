@@ -5,16 +5,39 @@
                 <tr>
                     <th>ブース</th>
                     <th>チェック</th>
-                    <th>Action</th>
+                    <th>削除</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach ($visitors as $visitors)
+                @foreach ($visitors as $visitor)
                     <tr>
-                        <td>{{ $visitors->booth_number }}</td>
-                        <td>{{ $visitors->created_at }}</td>
+                        {{-- <td>{{ $visitors->booth_number }}</td> --}}
+                        <td>
+                            @switch($visitor->booth_number)
+                                @case('H')
+                                    販売店
+                                @break
+
+                                @case('K')
+                                    工事店
+                                @break
+
+                                @case('S')
+                                    メーカー
+                                @break
+
+                                @case('E')
+                                    金融・管理・一般・EU
+                                @break
+
+                                @case('F')
+                                    ファシリティーズ
+                                @break
+                            @endswitch
+                        </td>
+                        <td>{{ $visitor->created_at }}</td>
                         <td style="width: 120px">
-                            {!! Form::open(['route' => ['visitors.destroy', $visitors->id], 'method' => 'delete']) !!}
+                            {!! Form::open(['route' => ['visitors.destroy', $visitor->id], 'method' => 'delete']) !!}
                             <div class='btn-group'>
                                 {!! Form::button('<i class="far fa-trash-alt"></i>', [
                                     'type' => 'submit',
@@ -32,7 +55,7 @@
 
     <div class="card-footer clearfix">
         <div class="float-right">
-            {{-- @include('adminlte-templates::common.paginate', ['records' => $visitors]) --}}
+            @include('adminlte-templates::common.paginate', ['records' => $visitors])
         </div>
     </div>
 </div>
