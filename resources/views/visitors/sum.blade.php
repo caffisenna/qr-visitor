@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-    <h2>入場集計1</h2>
+    <h2>入場集計</h2>
     <div class="card-body p-0">
         @php
             // 結果セットを日付ごとにグループ化
