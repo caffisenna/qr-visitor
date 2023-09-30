@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>{{ env('APP_NAME') }}</title>
+    <title>{{ config('app.name') }}</title>
 
     <!-- UIkit CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.16.26/dist/css/uikit.min.css" />
@@ -30,7 +30,7 @@
                     <div class="p-6">
                         <div class="flex items-center">
                             <div class="uk-text-center uk-margin-large-top">
-                                <h3>QRカウントシステム</h3>
+                                <h3>{{ config('app.name') }}</h3>
                             </div>
                         </div>
 
