@@ -29,7 +29,7 @@
                 <div class="">
                     <div class="p-6">
                         <div class="flex items-center">
-                            <div class="uk-text-center">
+                            <div class="uk-text-center uk-margin-large-top">
                                 <h3>QRカウントシステム</h3>
                             </div>
                         </div>
