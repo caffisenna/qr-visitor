@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('visitors', function (Blueprint $table) {
             $table->increments('id');
             $table->string('booth_number');
-            $table->timestamp('deleted_at');
+            $table->uuid('uuid')->nullable();
+            $table->timestamp('deleted_at')->nullable();
             $table->timestamps();
         });
     }

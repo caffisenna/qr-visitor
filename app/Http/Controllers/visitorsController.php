@@ -11,6 +11,7 @@ use Flash;
 use App\Models\visitors;
 use Illuminate\Support\Facades\DB;
 use App\Exports\ExcelExport; // excel export用
+use Doctrine\DBAL\SQL\Parser\Visitor;
 use Maatwebsite\Excel\Facades\Excel; // excel export用
 
 class visitorsController extends AppBaseController
@@ -55,13 +56,21 @@ class visitorsController extends AppBaseController
     public function store(CreatevisitorsRequest $request)
     {
         $input = $request->all();
+        $existingRecord = Visitors::where('uuid', $input['uuid'])->first();
 
-        $visitors = $this->visitorsRepository->create($input);
+        if(!$existingRecord){
+            $visitors = $this->visitorsRepository->create($input);
 
-        Flash::success('通過処理が完了しました。');
+            Flash::success('通過処理が完了しました。');
 
-        // return redirect(route('visitors.index'));
-        return redirect('home');
+            // return redirect(route('visitors.index'));
+            return redirect('home');
+        }else {
+            // 重複の場合、何もせずにhomeにリダイレクト
+            return redirect('home');
+        }
+
+
     }
 
     /**

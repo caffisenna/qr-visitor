@@ -10,6 +10,7 @@
                 @csrf
                 <input type="text" name="booth_number" id="booth_number" oninput="limitInput(this)" maxlength="1" required
                     class="uk-input uk-form-large">
+                    <input type="hidden" name="uuid" value="{{ Str::uuid() }}">
             </form>
 
             <script>
