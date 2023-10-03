@@ -58,19 +58,31 @@ class visitorsController extends AppBaseController
     public function store(CreatevisitorsRequest $request)
     {
         $input = $request->all();
-        $existingRecord = Visitors::where('uuid', $input['uuid'])->first();
+        // DBに追加
+        $visitors = $this->visitorsRepository->create($input);
 
-        if (!$existingRecord) {
-            $visitors = $this->visitorsRepository->create($input);
+        // 重複削除ここから
+        $duplicates = visitors::select('uuid')
+            ->groupBy('uuid')
+            ->havingRaw('COUNT(*) > 1')
+            ->get();
 
-            Flash::success('通過処理が完了しました。');
+        foreach ($duplicates as $duplicate) {
+            $recordsToDelete = visitors::where('uuid', $duplicate->uuid)
+                ->orderBy('id', 'desc')
+                ->skip(1)
+                ->take(PHP_INT_MAX) // すべての該当するレコードを取得
+                ->get();
 
-            // return redirect(route('visitors.index'));
-            return redirect('home');
-        } else {
-            // 重複の場合、何もせずにhomeにリダイレクト
-            return redirect('home');
+            foreach ($recordsToDelete as $record) {
+                $record->delete();
+            }
         }
+        // 重複削除ここまで
+
+        // メッセージと一緒にリダイレクト
+        Flash::success('通過処理が完了しました。');
+        return redirect('home');
     }
 
     /**
