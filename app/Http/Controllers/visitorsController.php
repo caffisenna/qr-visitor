@@ -36,7 +36,9 @@ class visitorsController extends AppBaseController
             $visitor->updated_at = now();
             $visitor->save();
         }
-        $visitors = $this->visitorsRepository->paginate(100);
+
+        $visitors = visitors::orderBy('created_at', 'desc')->paginate(100);
+
 
         return view('visitors.index')
             ->with('visitors', $visitors);
@@ -58,19 +60,17 @@ class visitorsController extends AppBaseController
         $input = $request->all();
         $existingRecord = Visitors::where('uuid', $input['uuid'])->first();
 
-        if(!$existingRecord){
+        if (!$existingRecord) {
             $visitors = $this->visitorsRepository->create($input);
 
             Flash::success('通過処理が完了しました。');
 
             // return redirect(route('visitors.index'));
             return redirect('home');
-        }else {
+        } else {
             // 重複の場合、何もせずにhomeにリダイレクト
             return redirect('home');
         }
-
-
     }
 
     /**
@@ -207,8 +207,7 @@ class visitorsController extends AppBaseController
             ->get();
 
         //エクセルの見出しを以下で設定
-        $headings = [
-        ];
+        $headings = [];
 
         //以下で先ほど作成したExcelExportにデータを渡す。
         return Excel::download(new ExcelExport($counts, $headings), $filename);
