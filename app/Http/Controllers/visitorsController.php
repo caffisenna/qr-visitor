@@ -62,20 +62,19 @@ class visitorsController extends AppBaseController
         $visitors = $this->visitorsRepository->create($input);
 
         // 重複削除ここから
-        $duplicates = visitors::select('uuid')
-            ->groupBy('uuid')
-            ->havingRaw('COUNT(*) > 1')
-            ->get();
+        $duplicates = visitors::where('uuid', $input['uuid'])->get();
 
-        foreach ($duplicates as $duplicate) {
-            $recordsToDelete = visitors::where('uuid', $duplicate->uuid)
-                ->orderBy('id', 'desc')
-                ->skip(1)
-                ->take(PHP_INT_MAX) // すべての該当するレコードを取得
-                ->get();
+        if ($duplicates->count() > 1) {
+            foreach ($duplicates as $duplicate) {
+                $recordsToDelete = visitors::where('uuid', $duplicate->uuid)
+                    ->orderBy('id', 'desc')
+                    ->skip(1)
+                    ->take(PHP_INT_MAX) // すべての該当するレコードを取得
+                    ->get();
 
-            foreach ($recordsToDelete as $record) {
-                $record->delete();
+                foreach ($recordsToDelete as $record) {
+                    $record->delete();
+                }
             }
         }
         // 重複削除ここまで
