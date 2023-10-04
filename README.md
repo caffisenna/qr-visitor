@@ -1,6 +1,6 @@
 # 二次元バーコードチェックインシステム
 
-二次元バーコードをスキャンして入場者数をカウントする簡易システムです。
+二次元バーコードをスキャンして入場者数をカウントする簡易システム
 
 - 二次元バーコードのスキャン
 - スタッフログイン
@@ -9,8 +9,7 @@
 
 ## Credits
 
-- [InfyOm Technologies](https://github.com/infyomlabs)
-- [All Contributors](../../contributors)
+- Taichi TADANO
 
 ## License
 
