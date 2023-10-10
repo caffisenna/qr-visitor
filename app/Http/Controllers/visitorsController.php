@@ -160,8 +160,8 @@ class visitorsController extends AppBaseController
 
     public function sum()
     {
-        $startDate = '2023-10-13'; // 開始日
-        $endDate = '2023-10-14';   // 終了日
+        $startDate = '2023-10-10'; // 開始日
+        $endDate = '2023-10-11';   // 終了日
 
         $counts = DB::table('visitors')
             ->select(
@@ -193,8 +193,8 @@ class visitorsController extends AppBaseController
     {
         $filename = 'export.xlsx';
 
-        $startDate = '2023-10-13'; // 開始日
-        $endDate = '2023-10-14';   // 終了日
+        $startDate = '2023-10-10'; // 開始日
+        $endDate = '2023-10-11';   // 終了日
 
         $counts = DB::table('visitors')
             ->select(
