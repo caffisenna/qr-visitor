@@ -201,7 +201,7 @@ class visitorsController extends AppBaseController
                 'booth_number',
                 DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') AS date"),
                 DB::raw("CASE
-                WHEN TIME(created_at) BETWEEN '09:00:00' AND '09:59:59' THEN '09:00'
+                WHEN TIME(created_at) BETWEEN '07:00:00' AND '09:59:59' THEN '09:00'
                 WHEN TIME(created_at) BETWEEN '10:00:00' AND '10:59:59' THEN '10:00'
                 WHEN TIME(created_at) BETWEEN '11:00:00' AND '11:59:59' THEN '11:00'
                 WHEN TIME(created_at) BETWEEN '12:00:00' AND '12:59:59' THEN '12:00'
