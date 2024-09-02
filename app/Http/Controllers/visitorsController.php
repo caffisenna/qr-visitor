@@ -164,10 +164,10 @@ class visitorsController extends AppBaseController
         $endDate = '2023-10-14';   // 終了日
 
         $counts = DB::table('visitors')
-            ->select(
-                'booth_number',
-                DB::raw("DATE_FORMAT(created_at, '%Y-%m-%d') AS date"),
-                DB::raw("CASE
+        ->select(
+            'booth_number',
+            DB::raw("DATE(created_at) AS date"),
+            DB::raw("CASE
                 WHEN TIME(created_at) BETWEEN '06:00:00' AND '09:59:59' THEN '09:00'
                 WHEN TIME(created_at) BETWEEN '10:00:00' AND '10:59:59' THEN '10:00'
                 WHEN TIME(created_at) BETWEEN '11:00:00' AND '11:59:59' THEN '11:00'
@@ -176,13 +176,18 @@ class visitorsController extends AppBaseController
                 WHEN TIME(created_at) BETWEEN '14:00:00' AND '14:59:59' THEN '14:00'
                 WHEN TIME(created_at) BETWEEN '15:00:00' AND '15:59:59' THEN '15:00'
                 ELSE '16:00' END AS time_interval"),
-                DB::raw('SUM(1) AS count')
-            )
-            ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
-            ->groupBy('booth_number', 'date', 'time_interval') // 'date'も含める
-            ->orderBy('booth_number')
-            ->orderBy('time_interval')
-            ->get();
+            DB::raw('COUNT(*) AS count')
+        )
+        ->groupBy('booth_number', 'date', 'time_interval')
+        ->orderBy('booth_number')
+        ->orderBy('date')
+        ->orderBy('time_interval')
+        ->get();
+
+    $result = [];
+    foreach ($counts as $record) {
+        $result[$record->booth_number][$record->date][$record->time_interval] = $record->count;
+    }
 
         // dd($counts);
 
@@ -211,7 +216,7 @@ class visitorsController extends AppBaseController
                 ELSE '16:00' END AS time_interval"),
                 DB::raw('SUM(1) AS count')
             )
-            ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
+            // ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
             ->groupBy('booth_number', 'date', 'time_interval') // 'date'も含める
             ->orderBy('booth_number')
             ->orderBy('time_interval')

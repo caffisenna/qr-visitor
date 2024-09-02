@@ -42,7 +42,7 @@
                                 {!! Form::button('<i class="far fa-trash-alt"></i>', [
                                     'type' => 'submit',
                                     'class' => 'btn btn-danger btn-xs',
-                                    'onclick' => "return confirm('Are you sure?')",
+                                    'onclick' => "return confirm('本当に削除しますか?')",
                                 ]) !!}
                             </div>
                             {!! Form::close() !!}

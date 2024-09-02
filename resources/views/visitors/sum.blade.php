@@ -134,15 +134,15 @@
                                         時間帯合計
                                 @endswitch
                             </td>
-                            <td>{{ $boothTotals[$booth]['09:00'] }}</td>
-                            <td>{{ $boothTotals[$booth]['10:00'] }}</td>
-                            <td>{{ $boothTotals[$booth]['11:00'] }}</td>
-                            <td>{{ $boothTotals[$booth]['12:00'] }}</td>
-                            <td>{{ $boothTotals[$booth]['13:00'] }}</td>
-                            <td>{{ $boothTotals[$booth]['14:00'] }}</td>
-                            <td>{{ $boothTotals[$booth]['15:00'] }}</td>
-                            <td>{{ $boothTotals[$booth]['16:00up'] }}</td>
-                            <td>{{ $boothTotals[$booth]['total'] }}</td>
+                            <td>{{ isset($boothTotals[$booth]['09:00']) ? $boothTotals[$booth]['09:00'] : 0 }}</td>
+                            <td>{{ isset($boothTotals[$booth]['10:00']) ? $boothTotals[$booth]['10:00'] : 0 }}</td>
+                            <td>{{ isset($boothTotals[$booth]['11:00']) ? $boothTotals[$booth]['11:00'] : 0 }}</td>
+                            <td>{{ isset($boothTotals[$booth]['12:00']) ? $boothTotals[$booth]['12:00'] : 0 }}</td>
+                            <td>{{ isset($boothTotals[$booth]['13:00']) ? $boothTotals[$booth]['13:00'] : 0 }}</td>
+                            <td>{{ isset($boothTotals[$booth]['14:00']) ? $boothTotals[$booth]['14:00'] : 0 }}</td>
+                            <td>{{ isset($boothTotals[$booth]['15:00']) ? $boothTotals[$booth]['15:00'] : 0 }}</td>
+                            <td>{{ isset($boothTotals[$booth]['16:00up']) ? $boothTotals[$booth]['16:00up'] : 0 }}</td>
+                            <td>{{ isset($boothTotals[$booth]['total']) ? $boothTotals[$booth]['total'] : 0 }}</td>
                         </tr>
                     @endforeach
 
