@@ -6,8 +6,9 @@
             <div class="row mb-2">
                 <div class="col-sm-12">
                     <h1>
-                    Create Visitors
+                        来訪者登録
                     </h1>
+                    手入力で来訪者を登録します。
                 </div>
             </div>
         </div>
@@ -30,8 +31,8 @@
             </div>
 
             <div class="card-footer">
-                {!! Form::submit('Save', ['class' => 'btn btn-primary']) !!}
-                <a href="{{ route('visitors.index') }}" class="btn btn-default"> Cancel </a>
+                {!! Form::submit('保存', ['class' => 'btn btn-primary']) !!}
+                <a href="{{ route('visitors.index') }}" class="btn btn-default"> キャンセル </a>
             </div>
 
             {!! Form::close() !!}
